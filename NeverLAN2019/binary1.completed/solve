@@ -1,0 +1,4 @@
+#!/bin/bash
+
+
+cat users_db | xxd -r -p | base64 -d | sed "s/{,/{/g" | jq . | grep -C 4 flag | egrep -C 2 --color "[0-9A-Z_]{4,}" 

@@ -1,0 +1,8 @@
+source adresy
+break *$main
+run
+break *memcpy
+c
+fin
+dump memory handlers $newMem $newMem+0x2f5
+quit

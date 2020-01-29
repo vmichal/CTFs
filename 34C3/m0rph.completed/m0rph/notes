@@ -1,0 +1,18 @@
+Jak se zdá, volání mmap a následně memcpy jsou velice dobří kandidáti na self-modifying code.
+
+Program nejdřív crashoval ještě dříve, než dospěl do main a to z neznámého důvodu. Krokování kódem libc tento problém vyřešilo, stejnětak běh se třemi breakpointy vloženými do _dl_start_user (funkce volající usercode?) a __libc_start_main prošlo anti-debug opatřeními. Je možné, že jsem tento problém jen špatně intepretoval a ve skutečnosti neexistoval, protože nyní, znaje adresu, na které začíná funkce main, již problém nenastává a program spokojeně i se špatným parametrem breakne na počátku funkce main.
+
+Dekompilaci problematizovala skutečnost, že neexistovaly debug symboly pro main. Řešením by bylo hodit breakpoint do __libc_start_main, která má debug info vždy(?). Možná vždy, pokud je program napsný v C(?)
+
+Důležité adresy jsou uvedeny v souboru adresy ve formátu pro gdb k uložení jako proměnné.
+
+Předem proxorovaný kód uložený jako data je umístěn kdesi v paměti, následně je na začátku main kopírovám memcpy na nově alokovanou stránku paměti $newMem. Po kontrole parametrů jsou promíchány handlery a následně začne loop, ve kterém se kontroluje aktuální znak. Pokud se liší od očekávaného, nastává systémové volání exit. Jinak se forcyklem xor-dekóduje paměť pro další handler a vrací se do main. Následně se spouští další handler. Jednotlivé handlery nemusí jít za sebou v pořadí, bohatě dostačuje, když je paměť včas dešifrovaná. 
+
+V GDB pomocí dump memory 'filename' 'offset' 'stop' jsem vytáhnul stránku paměti se xorovaným kódem a nechal python tento kód dekódovat. Následně příkaz gdb restore 'filename' binary 'offset' natáhl zpět do paměti správné instrukce. Kdybych nyní chtěl nechat rprogrm běžet dál, bude si xorovat paměť a vzniknou illegal instrukce, muselo by se zrušit xorování. Jedná se však o skvělý způsob, jak získat vlajku, jednotlivé její znaky jsou 6. bajt každého handleru (1. a 2. jsou push, 3 a 4 jsou mov al, byte [rdi], 5 je opcode pro cmp al, 6 je hodnota, se kterou se srovnává).
+
+Kód k vykonávání MUSÍ být vždycky přítomen v souboru: kontrolovat data, bss, možné xorování. Soustředit se jen na oblasti, které mapování paměti označí jako přináležející binárce samotné, nebo alespoň nepatřící dll atd. (pátrání v kódu pro libc má cenu JEN tehdy (?) když je static link. Asi určitě, protože dynamic link je s MOJÍ knihovnou, která vím, že funguje)
+			Dávat pozor na mmap a memcpy!
+
+Dříve se dřívě zaměřit na novou paměť, udělat coredump běžícího programu, pokud IDA nenalezne nic hodnotného straight away. Malloc a spol není vždy jen tak paměť, může alokovat i struktury => lepší práce s offsetama.
+
+Vlajka 34C3_M1GHTY_M0RPh1nG_g0 získána 4.2.2019

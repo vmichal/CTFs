@@ -1,0 +1,7 @@
+Soubor users_db jsou očividně hex encodenuté znaky, protože VŠECHNY znaky jsou v tisknutelné oblasti a jsou to hex číslice (kontrola cat users_db | egrep -o "[^0-9a-f]" nevrací vůbec nic, tudíž vše je hex). Dekódování na znaky vrátilo řetězec začínající ey a končícími na Qo=. TO JE base64 encoded JSON.
+
+V JSONu je drobná chybka, druhý znak je z neznámého důvodu čárka, opravíme to substitucí v sedu.
+
+Dekódování pomocí cat | base64 -d vyplivlo JSON data; protože víme, že vlajka je v all caps, regulární výraz na kapitálky, číslice a podtržítka vrátil správnou vlajku. Taky by šlo hledat flag, nebo dáel přemýšlet, kdyby stále vlajka na světě nebyla
+
+Vlajka ENC0D1NG_D4TA_1S_N0T_ENCRY7I0N dobyta 2.2.2019

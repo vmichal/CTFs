@@ -1,0 +1,13 @@
+Build with my new packer framework. Do you likes zeros in weird places? Try this!
+
+(Password does not contain 35C3_, prepend before submitting flag 35C3_${extracted_password}) Guest challenge by Qubasa.
+
+Difficulty estimate: medium
+
+Poznámky a ruční dekompilace na papírech.
+
+r15 je zamčený registr s pevnou hodnotou 0x555555554000
+od něj se počítají offsety, které jsem však moc líný znova vypisovat. Po přičtení offsetu (přibližně mezi 0x12200 a 0x12500) dojde k dereferenci a přečtený bajt je srovnán se znakem v hesle. Jenom jsem stále nepřišel na to, jak úspěšně přežít volání booleanové funkce, která měří čas a když jí for-loop trvá moc dlouho, vrátí true, což přepíše booleanovou proměnnou $rbp-0x83 v main a program i se správným heslem vypíše Awwww.
+
+Později jsem na internetu nalezl writeup.
+ https://github.com/EmpireCTF/empirectf/blob/master/writeups/2018-12-27-35C3-CTF/README.md#0pack

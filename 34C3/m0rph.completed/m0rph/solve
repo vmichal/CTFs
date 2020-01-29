@@ -1,0 +1,5 @@
+#!/bin/bash
+
+gdb --command=gdb_commands --args morph $(python -c "print('A'*0x17)")
+cat handlers | python decypher_mem.py > xored_mem
+python solve.py xored_mem

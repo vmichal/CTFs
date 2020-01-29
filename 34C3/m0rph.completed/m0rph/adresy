@@ -1,0 +1,5 @@
+set variable $main=0x555555554A76
+set variable $allocate_handler_array=0x5555555548d0
+set variable $handler_array=0x555555757260
+set variable $handler_code=0x555555554c78
+set variable $newMem=0x7ffff7fcf000

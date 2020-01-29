@@ -1,0 +1,2 @@
+#!/bin/bash
+php -f solution.php | sed s/outer/inner/g | nc 35.242.207.13 1 | head -n 1

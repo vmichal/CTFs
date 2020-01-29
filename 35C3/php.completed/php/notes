@@ -1,0 +1,5 @@
+
+
+Řešením bylo využití funkce unserialize, která očividně konstruuje objekty rychleji, než kontroluje, zda opravdu mohou existovat. Když tedy dostala serializovaný zápis objektu, který obsahoval dvě stejně pojmenované členy, byly do jedné proměnné přiřazeny dva objekty. Ten první byl v danou chvíli dán napospas GC, který zavolal jeho destruktor a tím odhalil vlajku.
+
+Vlajka je 35C3_php_is_fun_php_is_fun
